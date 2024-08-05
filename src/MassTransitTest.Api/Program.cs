@@ -1,4 +1,5 @@
 using MassTransitTest.Api.Messaging;
+using MassTransitTest.Api.Messaging.Publisher;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,13 @@ app.MapGet("/weatherforecast", () =>
         return forecast;
     })
     .WithName("GetWeatherForecast")
+    .WithOpenApi();
+
+app.MapPost("/weatherforecast", async (IMessageBroker messageBroker) =>
+    {
+        await messageBroker.SendAsync(new MemberCreated(Guid.NewGuid(), "Rafi", "rafi@gmail.com", "0971554296326"));
+    })
+    .WithName("WeatherForecast")
     .WithOpenApi();
 
 app.Run();

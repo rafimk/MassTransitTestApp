@@ -1,6 +1,8 @@
-﻿namespace MassTransitTest.Api.Messaging;
+﻿using MassTransit;
 
-// Marker interface
+namespace MassTransitTest.Api.Messaging;
+
+
 public interface IMessage
 {
 }

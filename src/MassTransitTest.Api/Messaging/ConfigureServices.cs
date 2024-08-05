@@ -1,6 +1,8 @@
 ﻿using MassTransit;
 using System.Reflection;
 using Humanizer;
+using MassTransitTest.Api.Messaging.Defenitions;
+using MassTransitTest.Api.Messaging.Consumer;
 
 namespace MassTransitTest.Api.Messaging;
 
@@ -11,6 +13,8 @@ public static class ConfigureServices
         services.AddMassTransit(busConfiguration =>
         {
             busConfiguration.SetKebabCaseEndpointNameFormatter();
+
+            var entryAssembly = Assembly.GetExecutingAssembly();
 
             busConfiguration.UsingRabbitMq((context, cfg) =>
             {
@@ -25,10 +29,15 @@ public static class ConfigureServices
                     h.Password(password!);
                 });
 
-                RegisterConsumers(busConfiguration, cfg, context, Assembly.GetExecutingAssembly());
+
+                cfg.ConfigureEndpoints(context);
             });
+
+            busConfiguration.AddConsumer<MemberCreatedConsumer>();
         });
-        
+
+        services.AddTransient<IMessageBroker, MessageBroker>();
+
         return services;
     }
     
